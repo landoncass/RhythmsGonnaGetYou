@@ -9,6 +9,7 @@ namespace RhythmsGonnaGetYou
         public string Title { get; set; }
         public bool IsExplicit { get; set; }
         public DateTime ReleaseDate { get; set; }
+        public int BandID { get; set; }
 
         public Band Band { get; set; }
 

@@ -75,8 +75,10 @@ namespace RhythmsGonnaGetYou
                         addBand();
                         break;
                     case "V":
+                        viewAllBands(context);
                         break;
                     case "F":
+                        findBand(context);
                         break;
 
                     default:
@@ -96,7 +98,7 @@ namespace RhythmsGonnaGetYou
                 newBand.NumberOfMembers = PromptForInteger("How many band members are there? ");
                 newBand.Website = PromptForString("what's the band web address? ");
                 newBand.Style = PromptForString("What music genre do they play? ");
-                newBand.IsSigned = PromptForBool("Are they signed to a record label? ");
+                newBand.IsSigned = PromptForBool("Are they signed to a record label? [Y/N] ");
                 newBand.ContactName = PromptForString("Who is the main contact? ");
                 newBand.ContactPhoneNumber = PromptForString("What is the contact phone number? ");
 
@@ -140,7 +142,8 @@ namespace RhythmsGonnaGetYou
         }
         private static void viewAllBands(RhythmsGonnaGetYouContext context)
         {
-            Console.WriteLine("These are our bands: ");
+            Console.WriteLine();
+            Console.WriteLine("These are the bands in our database: ");
             foreach (var viewBand in context.Bands)
             {
                 Console.WriteLine($" - {viewBand.Name}");

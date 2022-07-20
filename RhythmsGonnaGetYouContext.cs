@@ -13,7 +13,8 @@ namespace RhythmsGonnaGetYou
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("server=localhost;database=Rhythmdb");
-
+            // var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+            // optionsBuilder.UseLoggerFactory(loggerFactory);
         }
 
         public Band FindOneBand(string nameToFind)
