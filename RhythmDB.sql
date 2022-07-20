@@ -1,4 +1,4 @@
-CREATE TABLE "band" ( 
+CREATE TABLE "Band" ( 
     "Id" SERIAL PRIMARY KEY,
     "Name" TEXT,
     "CountryOfOrigin" TEXT,
@@ -8,34 +8,34 @@ CREATE TABLE "band" (
     "IsSigned" BOOLEAN,
     "ContactName" TEXT, 
     "ContactPhoneNumber" TEXT
- );
+);
 
 
-INSERT INTO "band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
+INSERT INTO "Band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
 VALUES ('Radiohead', 'UK', 4, 'Radiohead.com', 'Rock', TRUE, 'Thom Yorke', '965-585-6985')
 
-INSERT INTO "band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
+INSERT INTO "Band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
 VALUES ('Daft Punk', 'France', 2, 'DaftPunk.com', 'Electronic', TRUE, 'Robot 1', '555-956-6565')
 
-INSERT INTO "band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
+INSERT INTO "Band" ("Name", "CountryOfOrigin", "NumberOfMembers", "Website", "Style", "IsSigned", "ContactName", "ContactPhoneNumber")
 VALUES ('Sigur Ros', 'Iceland', 5, 'SigurRos.com', 'Post Rock', TRUE, 'Jonsi', '485-965-8565'), ('Jinger', 'Ukraine', 4, 'Jinger.net', 'Metal', FALSE, 'Louie', '985-854-4584'),
 ('Ernie and the Rubber Ducks', 'Bathtub', 2, 'ErnieDuck.com', 'Hardcore Punk', FALSE, 'Ernie Muppet', '555-555-5555')
 
-SELECT * FROM band;
+SELECT * FROM Band;
 
 CREATE TABLE "Album" ( 
     "Id" SERIAL PRIMARY KEY,
     "Title" TEXT,
     "IsExplicit" BOOLEAN,
     "ReleaseDate" DATE
- );
- 
- ALTER TABLE "Album" ADD COLUMN "BandID" INTEGER REFERENCES "band"("Id")
- 
- INSERT INTO "Album" ("Title", "IsExplicit", "ReleaseDate", "BandID")
- VALUES ('OK Computer', TRUE, '1997-05-21', 2)
-         
-   
+);
+
+ALTER TABLE "Album" ADD COLUMN "BandID" INTEGER REFERENCES "Band"("Id")
+
+INSERT INTO "Album" ("Title", "IsExplicit", "ReleaseDate", "BandID")
+VALUES ('OK Computer', TRUE, '1997-05-21', 2)
+
+
 CREATE TABLE "Song" (
     "Id" SERIAL PRIMARY KEY,
     "TrackNumber" INT,
@@ -51,10 +51,10 @@ CREATE TABLE "Song" (
           
   SELECT * FROM "Album";
 
-UPDATE "band" SET "IsSigned" = 'FALSE'
+UPDATE "Band" SET "IsSigned" = 'FALSE'
 WHERE "Name" = 'Sigur Ros'
 
-UPDATE "band" SET "IsSigned" = 'TRUE'
+UPDATE "Band" SET "IsSigned" = 'TRUE'
 WHERE "Name" = 'Jinger'
 
 SELECT * FROM "Album" WHERE "BandID" = 2
@@ -65,9 +65,9 @@ JOIN "Song" ON "Album"."Id" = "Song"."AlbumID"
 ORDER BY "ReleaseDate"
 
 SELECT *
-FROM "band"
+FROM "Band"
 WHERE "IsSigned" = TRUE
 
 SELECT *
-FROM "band"
+FROM "Band"
 WHERE "IsSigned" = FALSE
