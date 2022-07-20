@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RhythmsGonnaGetYou
 {
-    partial class Program
+    class Program
     {
         static void DisplayGreeting()
         {
@@ -50,8 +50,6 @@ namespace RhythmsGonnaGetYou
                 return 'N';
             }
         }
-
-
 
         static void Main(string[] args)
         {
