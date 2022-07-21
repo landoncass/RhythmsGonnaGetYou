@@ -119,45 +119,59 @@ namespace RhythmsGonnaGetYou
             }
             else
             {
-                var newAlbum = new Album();
-                Console.WriteLine($"Do you want to add an album to {foundBand.Name}? [Y/N] ");
-                var answer = Console.ReadLine();
-
-                if (answer == "Y")
+                Console.WriteLine("What would you like to do with this band?\n (A)dd a new album \n (V)iew all albums by this artist \n (R)elease a band go from their label \n (S)ign a band to a label \n (Q)uit : ");
+                var bandMenu = Console.ReadLine().ToUpper();
+                switch (bandMenu)
                 {
-                    newAlbum.Title = PromptForString("What is the name of the album you want to add? ");
-                    newAlbum.IsExplicit = PromptForBool("Does the album have any explicit tracks? [Y/N]");
-                    newAlbum.Band = foundBand;
+                    case "A":
+                        var newAlbum = new Album();
+                        newAlbum.Title = PromptForString("What is the name of the album you want to add? ");
+                        newAlbum.IsExplicit = PromptForBool("Does the album have any explicit tracks? [Y/N]");
+                        newAlbum.Band = foundBand;
+                        Console.WriteLine($"What's the release date? (YYYY-MM-DD) ");
+                        var ReleaseDate = DateTime.Parse(Console.ReadLine());
+                        var inputValueUTC = ReleaseDate.ToUniversalTime();
+                        newAlbum.ReleaseDate = inputValueUTC;
+                        context.Albums.Add(newAlbum);
+                        context.SaveChanges();
 
-                    Console.WriteLine($"What's the release date? (YYYY-MM-DD) ");
-                    var ReleaseDate = DateTime.Parse(Console.ReadLine());
+                        Console.WriteLine($"Do you want to add a song to {newAlbum.Title}? [Y/N] ");
+                        var addSongsResponse = Console.ReadLine();
+                        while (addSongsResponse == "Y")
+                        {
+                            var newSong = new Song();
+                            newSong.Title = PromptForString("What is the name of the song? ");
+                            newSong.TrackNumber = PromptForInteger("Which track number is it? ");
+                            newSong.Duration = PromptForInteger("How long is the song? (00:00:00) ");
+                            newSong.AlbumID = newAlbum.Id;
+                            context.Songs.Add(newSong);
+                            context.SaveChanges();
 
-                    var inputValueUTC = ReleaseDate.ToUniversalTime();
+                            Console.WriteLine($"Do you want to add another song to {newAlbum.Title}? [Y/N] ");
+                            addSongsResponse = Console.ReadLine();
+                        }
 
-                    newAlbum.ReleaseDate = inputValueUTC;
-                    context.Albums.Add(newAlbum);
-                    context.SaveChanges();
-                    Console.WriteLine($"Do you want to add a song to {newAlbum.Title}? [Y/N] ");
-                    var addSongsResponse = Console.ReadLine();
-                    while (addSongsResponse == "Y")
-                    {
-                        var newSong = new Song();
-                        newSong.Title = PromptForString("What is the name of the song? ");
-                        newSong.TrackNumber = PromptForInteger("Which track number is it? ");
-                        newSong.Duration = PromptForInteger("How long is the song? (00:00:00) ");
-                        newSong.AlbumID = newAlbum.Id;
-                    }
+                        break;
+                    default:
+                        break;
                 }
-            }
-        }
-        private static void viewAllBands(RhythmsGonnaGetYouContext context)
-        {
-            Console.WriteLine();
-            Console.WriteLine("These are the bands in our database: ");
-            foreach (var viewBand in context.Bands)
-            {
-                Console.WriteLine($" - {viewBand.Name}");
+
+
+                // Console.WriteLine($"Do you want to add an album to {foundBand.Name}? [Y/N] ");
+                // var answer = Console.ReadLine();
+                // if (answer == "Y")
+
             }
         }
     }
+    private static void viewAllBands(RhythmsGonnaGetYouContext context)
+    {
+        Console.WriteLine();
+        Console.WriteLine("These are the bands in our database: ");
+        foreach (var viewBand in context.Bands)
+        {
+            Console.WriteLine($" - {viewBand.Name}");
+        }
+    }
+}
 }
