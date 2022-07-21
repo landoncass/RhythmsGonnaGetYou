@@ -137,6 +137,16 @@ namespace RhythmsGonnaGetYou
                     newAlbum.ReleaseDate = inputValueUTC;
                     context.Albums.Add(newAlbum);
                     context.SaveChanges();
+                    Console.WriteLine($"Do you want to add a song to {newAlbum.Title}? [Y/N] ");
+                    var addSongsResponse = Console.ReadLine();
+                    while (addSongsResponse == "Y")
+                    {
+                        var newSong = new Song();
+                        newSong.Title = PromptForString("What is the name of the song? ");
+                        newSong.TrackNumber = PromptForInteger("Which track number is it? ");
+                        newSong.Duration = PromptForInteger("How long is the song? (00:00:00) ");
+                        newSong.AlbumID = newAlbum.Id;
+                    }
                 }
             }
         }
