@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ namespace RhythmsGonnaGetYou
         static string PromptForString(string prompt)
         {
             Console.Write(prompt);
-            var userInput = Console.ReadLine();
+            var userInput = Console.ReadLine().ToUpper();
 
             return userInput;
         }
@@ -62,7 +63,7 @@ namespace RhythmsGonnaGetYou
             while (keepGoing)
             {
                 Console.WriteLine();
-                Console.Write("What do you want to do?\n (A)dd a band:\n (V)iew all Bands:\n (F)ind a band\n or (Q)uit: ");
+                Console.Write("What do you want to do?\n (A)dd a band:\n (S)how all albums \n (V)iew all Bands:\n (F)ind a band\n or (Q)uit: ");
 
                 var choice = Console.ReadLine().ToUpper();
 
@@ -73,6 +74,9 @@ namespace RhythmsGonnaGetYou
                         break;
                     case "A":
                         addBand();
+                        break;
+                    case "S":
+                        showAllAlbums(context);
                         break;
                     case "V":
                         viewAllBands(context);
@@ -87,6 +91,7 @@ namespace RhythmsGonnaGetYou
                 }
             }
         }
+
         static Band addBand()
         {
             var newBand = new Band();
@@ -107,6 +112,7 @@ namespace RhythmsGonnaGetYou
             }
             return newBand;
         }
+
         private static void findBand(RhythmsGonnaGetYouContext context)
         {
             var name = PromptForString("What band are you looking for? ");
@@ -119,7 +125,7 @@ namespace RhythmsGonnaGetYou
             }
             else
             {
-                Console.WriteLine("What would you like to do with this band?\n (A)dd a new album \n (V)iew all albums by this artist \n (R)elease a band go from their label \n (S)ign a band to a label \n (Q)uit : ");
+                Console.WriteLine("What would you like to do with this band?\n (A)dd a new album \n (V)iew all albums by this artist \n (R)elease a band go from their label \n (S)ign a band to a label \n (B)ack to previous menu : ");
                 var bandMenu = Console.ReadLine().ToUpper();
                 switch (bandMenu)
                 {
@@ -135,43 +141,87 @@ namespace RhythmsGonnaGetYou
                         context.Albums.Add(newAlbum);
                         context.SaveChanges();
 
+                        // Adding songs to the album
                         Console.WriteLine($"Do you want to add a song to {newAlbum.Title}? [Y/N] ");
-                        var addSongsResponse = Console.ReadLine();
-                        while (addSongsResponse == "Y")
+                        var addSongResponse = Console.ReadLine().ToUpper();
+                        while (addSongResponse == "Y")
                         {
                             var newSong = new Song();
                             newSong.Title = PromptForString("What is the name of the song? ");
                             newSong.TrackNumber = PromptForInteger("Which track number is it? ");
-                            newSong.Duration = PromptForInteger("How long is the song? (00:00:00) ");
+                            newSong.Duration = PromptForString("How long is the song? (00:00:00) ");
                             newSong.AlbumID = newAlbum.Id;
                             context.Songs.Add(newSong);
                             context.SaveChanges();
 
                             Console.WriteLine($"Do you want to add another song to {newAlbum.Title}? [Y/N] ");
-                            addSongsResponse = Console.ReadLine();
+                            addSongResponse = Console.ReadLine().ToUpper();
                         }
+                        break;
 
+                    case "V":
+                        {
+                            Console.WriteLine($"Here are the albums released by {foundBand.Name}:");
+                            var bandAlbums = context.Albums.Where(a => a.BandID == foundBand.Id).OrderBy(a => a.ReleaseDate);
+                            foreach (var album in bandAlbums)
+                            {
+                                Console.WriteLine($"{album.Title} - Released: {album.ReleaseDate.ToString("MMMM - yyyy")}");
+                            }
+                        }
+                        break;
+                    case "R":
+                        {
+                            if (foundBand.IsSigned == true)
+                            {
+                                Console.WriteLine("Are you sure you want to release this band from their label? [Y/N]");
+                                var releaseBand = Console.ReadLine().ToUpper();
+                                if (releaseBand == "Y")
+                                {
+                                    foundBand.IsSigned = false;
+                                    context.SaveChanges();
+                                }
+                            }
+                        }
+                        break;
+                    case "S":
+                        if (foundBand.IsSigned == false)
+                        {
+                            Console.WriteLine("Are you sure you want to sign this band to a label? [Y/N]");
+                            var releaseBand = Console.ReadLine().ToUpper();
+                            if (releaseBand == "Y")
+                            {
+                                foundBand.IsSigned = true;
+                                context.SaveChanges();
+                            }
+                        }
+                        break;
+                    case "B":
                         break;
                     default:
                         break;
                 }
+            }
+        }
 
+        private static void showAllAlbums(RhythmsGonnaGetYouContext context)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"These are the albums: ");
+            var viewAlbums = context.Albums.OrderBy(a => a.ReleaseDate);
+            foreach (var album in viewAlbums)
+            {
+                Console.WriteLine($"{album.Title}");
+            }
+        }
 
-                // Console.WriteLine($"Do you want to add an album to {foundBand.Name}? [Y/N] ");
-                // var answer = Console.ReadLine();
-                // if (answer == "Y")
-
+        private static void viewAllBands(RhythmsGonnaGetYouContext context)
+        {
+            Console.WriteLine("Would you like to see (S)igned or (U)nsigned bands? ");
+            var signedOrNot = Console.ReadLine().ToUpper() == "S" ? true : false;
+            foreach (var viewBand in context.Bands.Where(b => b.IsSigned == signedOrNot))
+            {
+                Console.WriteLine($" - {viewBand.Name}");
             }
         }
     }
-    private static void viewAllBands(RhythmsGonnaGetYouContext context)
-    {
-        Console.WriteLine();
-        Console.WriteLine("These are the bands in our database: ");
-        foreach (var viewBand in context.Bands)
-        {
-            Console.WriteLine($" - {viewBand.Name}");
-        }
-    }
-}
 }

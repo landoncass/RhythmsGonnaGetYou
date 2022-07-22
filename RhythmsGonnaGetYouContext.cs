@@ -20,7 +20,7 @@ namespace RhythmsGonnaGetYou
         public Band FindOneBand(string nameToFind)
         {
             Band foundBand = Bands.FirstOrDefault(Band => Band.Name.ToUpper().Contains(nameToFind.ToUpper()));
-
+            // .Include(band => band.Albums)
             return foundBand;
         }
     }

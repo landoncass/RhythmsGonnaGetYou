@@ -15,6 +15,6 @@ namespace RhythmsGonnaGetYou
         public string ContactPhoneNumber { get; set; }
 
         public List<Album> Albums { get; set; }
-        public List<Song> Songs { get; set; }
+
     }
 }
